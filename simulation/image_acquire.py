@@ -2,7 +2,7 @@ from PIL import Image
 
 out = open("black.txt", "w")
 
-im = Image.open("question_mark_resized.jpg")
+im = Image.open("question_mark.jpg")
 pix = im.load()
 #print(im.size)
 
