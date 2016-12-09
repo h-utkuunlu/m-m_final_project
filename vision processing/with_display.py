@@ -81,21 +81,45 @@ for line in input_file:
     point = (coordinate[0], coordinate[1])
     set_on.add(point)
 
-print(len(set_on))
+#print(len(set_on))
 
-color1Lower = (80, 50, 50)
-color1Upper = (130, 245, 245)
 
-color2Lower = (10, 100, 100)
-color2Upper = (40, 255, 255)
+#HSV
 
+#PURPLE
+color1Lower = (120, 50, 50)
+color1Upper = (160, 255, 255)
+
+#RED
+color2Lower = (0, 50, 100)
+color2Upper = (10, 255, 255)
+
+#white
+color3Lower = (0, 0, 200)
+color3Upper = (0, 0, 255)
+
+"""
+
+color2Lower = (10, 240, 240)
+color2Upper = (11, 255, 255)
+
+
+#BGR
+
+color1Lower = (100, 30, 20)
+color1Upper = (120, 50, 50)
+
+color2Lower = (10, 240, 240)
+color2Upper = (11, 255, 255)
+
+"""
 counter = 0
 (dX, dY) = (0, 0)
 direction = ""
 cp = None
 state = '0'.encode()
 
-ser = serial.Serial('/dev/ttyACM0', 57600)
+#ser = serial.Serial('/dev/ttyACM0', 57600)
 
 
 print("[INFO] sampling THREADED frames from webcam...")
@@ -111,7 +135,7 @@ while True:
 	frame = imutils.resize(frame, width=600)
 	mask1 = imageProcess(frame, color1Lower, color1Upper)
 	mask2 = imageProcess(frame, color2Lower, color2Upper)
-	
+	display_mask = imageProcess(frame, color3Lower, color3Upper)
 	
 	cnts = cv2.findContours(mask1.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
 	center = None
@@ -131,11 +155,15 @@ while True:
 			
 			if center in set_on:
 				state = "1".encode()
-				ser.write(state)
-				cv2.circle(bg, center, 3, (255, 0, 0), -1)
+				#ser.write(state)
+				#cv2.circle(bg, center, 3, (255, 0, 255), -1)
 			else:
 				state = "0".encode()
-				ser.write(state)
+				#ser.write(state)
+	
+	else:
+		state = "0".encode()
+		#ser.write(state)
 	
 	cnts = cv2.findContours(mask2.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
 	center = None
@@ -147,7 +175,6 @@ while True:
 		M = cv2.moments(c)
 		center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 		
-
 		if radius > 2:
 
 			#cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 1)
@@ -155,23 +182,44 @@ while True:
 			
 			if center in set_on:
 				state = "3".encode()
-				ser.write(state)
-				cv2.circle(bg, center, 3, (0, 255, 255), -1)
+				#ser.write(state)
+				#cv2.circle(bg, center, 3, (0, 0, 255), -1)
 			else:
 				state = "2".encode()
-				ser.write(state)
+				#ser.write(state)
+	
+	else:
+		state = "2".encode()
+		#ser.write(state)
+	
+	cnts = cv2.findContours(mask2.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+	center = None
+	
+	if len(cnts) > 0:
+		for c in cnts:
+		#c = max(cnts, key=cv2.contourArea)
+			((x, y), radius) = cv2.minEnclosingCircle(c)
+			M = cv2.moments(c)
+			center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+		
+			if radius > 2:
+		
+				cv2.circle(bg, center, 3, (0, 0, 255), -1)
 	
 	
-	#key = cv2.waitKey(1) & 0xFF
-	#cv2.imshow("Blue", mask1)
-	#cv2.imshow("Yellow", mask2)
-	#cv2.imshow("Both", bg)
-	#if key == ord("q"):
-	#	break
+	key = cv2.waitKey(1) & 0xFF
+	#cv2.imshow("purpe", mask1)
+	#cv2.imshow("red", mask2)
+	cv2.imshow("Both", bg)
+	if key == ord("q"):
+		break
+		
+	if key == ord("c"):
+		bg = cv2.imread("images/bg.png")
 	fps.update()
 
-	if fps.numFrames > 1000:
-		break
+	#if fps.numFrames > 10000:
+	#	break
 		
 
 fps.stop()

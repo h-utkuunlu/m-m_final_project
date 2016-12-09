@@ -6,8 +6,13 @@ while True:
 
 	ser.write('1'.encode())
 	print("1")
-	sleep(1)
+	sleep(0.5)
+	ser.write('3'.encode())
+	print("3")
+	sleep(0.5)
 	ser.write('0'.encode())
 	print("0")
-	sleep(1)
-
+	sleep(0.5)
+	ser.write('2'.encode())
+	print("2")
+	sleep(0.5)
