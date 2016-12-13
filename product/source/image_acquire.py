@@ -1,6 +1,8 @@
 from PIL import Image
 
-items = ["android", "battery", "cloud", "cross", "dove", "electricity", "electronics", "human", "oil", "peace", "tick", "tree", "web", "wheel" ]
+items = ["earth", "fire"]
+
+#["android", "battery", "cloud", "cross", "dove", "electricity", "electronics", "human", "oil", "peace", "tick", "tree", "web", "wheel" ]
 
 for i in items:
 
