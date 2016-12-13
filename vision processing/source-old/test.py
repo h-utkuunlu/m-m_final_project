@@ -32,7 +32,7 @@ cv2.destroyAllWindows()
 
 """
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 cap.set(10,0)
 
@@ -48,6 +48,9 @@ while True:
         break
 
 # When everything done, release the capture
+
+cv2.imwrite('image.png', frame)
+
 cap.release()
 cv2.destroyAllWindows()
 

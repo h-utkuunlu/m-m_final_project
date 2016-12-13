@@ -75,12 +75,10 @@ def image_process(frame, colorLower, colorUpper, gray = False):
 	else:
 	
 		#bw = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+		#ret,mask = cv2.threshold(frame, 190, 255,cv2.THRESH_BINARY)
 		mask = cv2.inRange(frame, colorLower, colorUpper)
-		#ret,mask = cv2.threshold(frame, 200, 255,cv2.THRESH_BINARY)
-		mask = cv2.erode(mask, None)
-		mask = cv2.dilate(mask, None, iterations=2)
-		
-		#
+		#mask = cv2.erode(mask, None, iterations=2)
+		#mask = cv2.dilate(mask, None, iterations=2)
 		
 	return mask
 
@@ -117,18 +115,19 @@ def update_screen(mask):
 	center = None
 	
 	if len(cnts) > 0:
+		
 		for c in cnts:
 		#c = max(cnts, key=cv2.contourArea)
 			((x, y), radius) = cv2.minEnclosingCircle(c)
 			M = cv2.moments(c)
 			center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 			
-			cv2.circle(bg, center, 3, (255, 255, 255), -1)
+			cv2.circle(bg, center, 0, (255, 255, 255), -1)
 			
 			#if radius > 2:
 				#cv2.circle(bg, (int(x), int(y)), int(radius), (0, 255, 255), 1)
 	
-	cv2.imshow("Image", bg)
+	#cv2.imshow("Image", bg)
 	
 
 input_file = open("images/black.txt")
@@ -171,7 +170,7 @@ bg = cv2.imread("images/bg.png")
 
 while True:
 	
-	frame = vs.read()
+	frame = cv2.imread("images/test_image.png")
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	#frame = imutils.resize(frame, width=600)
 	
@@ -179,17 +178,22 @@ while True:
 	mask2 = image_process(hsv, color2Lower, color2Upper)
 	display_mask = image_process(hsv, color3Lower, color3Upper, True)
 	
-	#cv2.imshow('Purple', mask1)
-	#cv2.imshow('Yellow', mask2)
-	#cv2.imshow('Display', display_mask)
+	cv2.imshow('Purple', mask1)
+	cv2.imshow('Yellow', mask2)
+	cv2.imshow('Display', display_mask)
 	
-	set_arm_state(mask1, 0) # Purple
-	set_arm_state(mask2, 1) # Yellow
+	#set_arm_state(mask1, 0) # Purple
+	#set_arm_state(mask2, 1) # Yellow
 	
 	#ser.write('1'.encode())
 	#ser.write('3'.encode())
 	
-	update_screen(display_mask)
+	
+	#update_screen(display_mask)
+	
+	#cv2.imshow("purpe", mask1)
+	#cv2.imshow("red", mask2)
+	#cv2.imshow("Both", frame)
 	
 	key = cv2.waitKey(1) & 0xFF
 		
